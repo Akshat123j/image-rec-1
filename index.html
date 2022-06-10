@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Getting Started with ml5.js</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- p5 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/addons/p5.sound.min.js"></script>
+    <!-- ml5 -->
+    <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
+  </head>
+
+  <body>
+    <script>
+      console.log('ml5 version:', ml5.version);
+
+      let classifier;
+      let label='' ;
+      let img;
+      let mobilenet;
+      
+      function preload() {
+       // img = loadImage('green_balloon0.png');
+      }
+
+      function setup() {
+        createCanvas(windowWidth,windowHeight);
+        capture=createCapture(VIDEO);
+        capture.hide();
+        classifier = ml5.imageClassifier('MobileNet',capture,modelReady);
+      }
+
+      function modelReady(){
+        console.log("MODEL IS READY!!!");
+        mobilenet.predict(gotResult);
+      }
+        // A function to run when we get any errors and the results
+        function gotResult(error, results) {
+          // Display error in the console
+          if (error) {
+            console.error(error);
+          }
+          // The results are in an array ordered by confidence.
+          console.log(results);
+          //createDiv('Label: ' + results[0].label);
+          label = results[0].label;
+        }
+
+        function draw(){
+        background(0);
+        image(capture, 0, 0,width,height);
+        fill("white");
+        textSize(34);
+        text(label,10,height-100);
+        classifier.classify(capture, gotResult);
+      }
+
+    </script>
+  </body>
+</html>
